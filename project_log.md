@@ -4,24 +4,47 @@
 
 ## Phase 1 — Data Collection & Validation
 
-### 2026-03-23 — Data Source Discovery
+### 2026-03-23 — Phase 1: Data Source & Scraper
 
-**Decision:** Scrape Arsenal press conferences via Arsenal's Typesense JSON search API rather than parsing static HTML.
+#### What I did
+- Discovered Arsenal website uses a Typesense JSON search API via DevTools Network tab
+- Inspected POST request payload and response structure
+- Set up Git repository and project folder structure
+- Built scraper in `src/scraping/scraper.py`
+- Scraped 483 unique Arsenal press conferences (January 2018 — March 2026) saved as raw JSON files in `data/raw/`
+- Created a script to validate the data in `src/scraping/validate_data.py`
+- Checked if any files were missing their "body" 
+- Checked the average, min and max length of the files' bodies
+
+#### Key decisions
+**Decision:** Scrape via Arsenal's Typesense JSON search API rather than parsing static HTML.
 
 **Why:** The Arsenal website loads press conference listings dynamically. The browser makes a POST request to a Typesense search endpoint and renders the JSON response. Calling this API directly from Python gives us clean, structured JSON with no HTML parsing required for the listing layer.
 
 **Alternatives considered:** BeautifulSoup on static HTML — ruled out because the content is dynamically rendered and wouldn't be present in the initial HTML response.
 
-**Trade-offs:** Relying on an undocumented client-side API that Arsenal could change or rate-limit without notice. The API key is a publicly exposed read-only client-side key — acceptable here because it's intentionally embedded in their public JS for browser use, with no write permissions and no billing implications. 
-
-- Save raw JSON per article before loading to SQLite: if one article's data is corrupted or needs reprocessing we just have to touch one file.
+**Trade-offs:** Relying on an undocumented client-side API that Arsenal could change or rate-limit without notice. The API key is a publicly exposed read-only client-side key — acceptable because it's intentionally embedded in their public JS for browser use, with no write permissions and no billing implications. Saving raw JSON per article before loading to SQLite means slightly more scraper complexity, but if one article's data is corrupted or needs reprocessing we only touch one file.
 
 **Open questions:**
-- Are all 1094 results actually press conferences, or does `category_name` vary? Needs programmatic verification.
-- Does the `body` field always contain the full transcript, or sometimes just a summary?
-- Is there a rate limit on this endpoint?
+- Does the `body` field always contain the full transcript, or sometimes just a summary? - some of the files contain other infomation or genral articles so will have to be filtered
+- Is there a rate limit on this endpoint? - No issues at 5 pages with 10 second delay
+- Total pages hardcoded at 5 — should be made dynamic using `found` from the response.
 
 **Interview Q I should be able to answer:** Why is it better to call a JSON API directly than scrape rendered HTML?
 
 ---
 
+**Decision:** Filtered out files with less than 200 words. 
+
+**Why:** The files below the threshold did not contain transcripts, but instead were general articles. We do not need these files. 
+
+**Alternatives considered:** Attempted to filter using the "every word" substring, however, there were too many title variations that it did not catch, removing plenty of good data. 
+
+**Trade-offs:** Some files may still contain text that is not transcript related. 
+
+**Open questions:**
+- Does the `body` field of full transcripts still include unwanted content 
+
+**Interview Q I should be able to answer:** How did you filter out unneeded files? And how did you decide on the threshold?
+
+---
