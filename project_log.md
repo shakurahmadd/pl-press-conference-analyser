@@ -48,3 +48,33 @@
 **Interview Q I should be able to answer:** How did you filter out unneeded files? And how did you decide on the threshold?
 
 ---
+
+## Phase 2 — Load Files to Database
+
+### 2026-03-24 — Phase 2: Load Files to Database
+
+#### What I did
+- Created a database folder to hold `load_to_db.py`
+- BeautifulSoup cleaning approach — removing <a> tags, using separator and strip
+- Clean HTML before storing vs storing raw
+- The script takes the JSON files -> cleans the html body and loads it into an SQLite database
+
+
+#### Key decision
+**Decision:** Store the data in an SQLite database
+
+**Why:** SQLite databases are good at filtering data. It can be queried directly with SQL - filter by date, by manager, by keyword - without loading all 481 rows into memory first.  
+
+**Alternatives considered:** Using CSV files, however it requres loading everything into pandas or Python before filtering.
+
+**Trade-offs:** CSV files can be opened in Excel or viewed directly, SQLite requires a tool or code to inspect. We also loose some simplicity (setting up connections, cursors...)
+
+**Open questions:**
+- Does the cleaned body text still contain any unwanted content beyond <a> tags?
+- Does querying the database work? 
+
+
+**Interview Q I should be able to answer:** Why did you decide to use an SQLite database over a CSV file?
+
+
+--- 
