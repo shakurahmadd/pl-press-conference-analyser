@@ -134,3 +134,13 @@
 - Twitter-RoBERTa-base-sentiment displays better calibration as its overall confidence reflects the accuracy better. 
 
 --- 
+
+## Phase 4 — Sentiment Analysis Pipeline
+
+### 2026-03-23 
+
+#### What I did
+ - Built sentiment pipeline in `src/nlp/sentument.py`
+ - Added label and score columns to chunks table
+ - Ran inference on al 6159 chunks: computed score and label by running out baseline model for every answer in the chunks table
+ - The baseline model systematically underdetects negative sentiment in football press conferences, returning only 9% negative labels. This is consitent with the domain mismatch hypothesis - diplomatic-trained langauge is misclassified as neutral of positive

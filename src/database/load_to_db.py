@@ -109,10 +109,6 @@ cur.execute("SELECT * FROM chunks LIMIT 1")
 print(cur.fetchall())
 
 
-
-
-
-
 con.close()
 
 
