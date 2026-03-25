@@ -65,7 +65,7 @@
 
 **Why:** SQLite databases are good at filtering data. It can be queried directly with SQL - filter by date, by manager, by keyword - without loading all 481 rows into memory first.  
 
-**Alternatives considered:** Using CSV files, however it requres loading everything into pandas or Python before filtering.
+**Alternatives considered:** Using CSV files, however it requires loading everything into pandas or Python before filtering.
 
 **Trade-offs:** CSV files can be opened in Excel or viewed directly, SQLite requires a tool or code to inspect. We also loose some simplicity (setting up connections, cursors...)
 
@@ -74,7 +74,63 @@
 - Does querying the database work? 
 
 
-**Interview Q I should be able to answer:** Why did you decide to use an SQLite database over a CSV file?
+**Interview Q I should be able to answer:** 
+- Why did you use SQLite over a proper database like PostgreSQL? SQLIte is severless and file based - no setup, no separate process, perfect for a project this size. PostgreSQL is for multi-user, high-concurrent systems.
+- Walk me though your HTML cleaning process - why did you specifically remove <a> tags, and what else might you have missed? We used beautiful soup to clean the HTML. final_all was used to find all the text with the HTML link tag <a> and then .decompose to remove it from the body. There might still be text that is not links but filler infomation or introductions. 
+- Your created field is stored as a Unix timestamp. How would you query all press conferences from 2023? SELECT * FROM arsenal WHERE created BETWEEN 1672531200 AND 1704067199. We can use datetime module for conversions. 
 
+--- 
+
+## Phase 3 — Selecting and Testing a Baseline Model
+
+#### What I did
+- Searched hugging face for sentiment analysis model
+- Also checked for any football or sports related ones -> No reliable ones were found
+- Selected Twitter-RoBERTa-base-sentiment as a baseline model
+- Model has a 512 token limit so we will chunk transcripts into sections, analyse each chunk and aggregate the scores
+- More data validation to see if we can chunk transcripts into Q&A pairs - split majority using <strong> tags (~93%), 33 (~7%) don't and it mostly editorial content. Out decision is to process with <strong> tag chunking for the majority and ignore edge cases for now
+- ~7% is small enough that it should not skew the sentiment analysis. 
+- Tested the baseline model against some basic football quotes -> it performed well with a high confidence level
+- Basline model then tested on some rows in our database -> model underperformed on the majority of tests
+- Experimented with chunking. HTML body is split into question and answer pairs using the function in `preprocessing/chunking.py`
+- The model lacks confidence with quotes that are measured, use diplomatic lanaguage. This is a fundamental domain problem and would require further fine tuning
+- Added chunking to the database using nid as a forign key. All together we have 481 transcripts and 6159 chunks. 
+
+
+#### Key decision
+**Decision:** Chose Twitter-RoBERTa-base-sentiment as a baseline model
+
+**Why:** It is pretrained on tweets so it has a strong baseline for informal, emotional text. 
+
+**Alternatives considered:** Considered using DistilBERT or other popular sentiment analysis models on hugging face
+
+**Trade-offs:** Tweets are people expressing opinions and emotions directly, whilst press conferences are managers giving carefully considered, media-trained repsonses. The sentiment may be a little bit harder to extract. 
+
+**Open questions:**
+- How well will the baseline model perform on our data
+- Will we have to fine-tune our model and how will be go about training or getting labled data. 
+
+**Interview Q I should be able to answer:** 
+- Why did you choose that model as your baseline model? 
+
+
+--- 
+
+#### Key decision
+**Decision:** Selected Twitter-RoBERTa-base-sentiment over DistilRoberta-financial-sentiment to move forward as baseline model
+
+**Why:** The financial model displayed overconfidence in its results. Twitter-RoBERTa, although incorrect, displayed signals or uncertainty in its incorrect results, which is more telling. 
+
+**Alternatives considered:** Considered using DistilRoberta-financial-sentiment
+
+**Trade-offs:** The model still struggles with the same type of text - measured, media-trained langauge, where a manager is putting a positive spin on a negative result. This is a fundemental domain problem. 
+
+**Open questions:**
+- Is it worth fine-tuning the model to our domain?
+- Could we attempt LLM-assisted labelling 
+- Is it worth labelling by hand for maximum accuracy?
+
+**Interview Q I should be able to answer:** 
+- Twitter-RoBERTa-base-sentiment displays better calibration as its overall confidence reflects the accuracy better. 
 
 --- 

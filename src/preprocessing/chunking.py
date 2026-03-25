@@ -1,0 +1,23 @@
+from bs4 import BeautifulSoup
+import sqlite3
+
+
+def chunk_by_qa(html_body):
+    soup = BeautifulSoup(html_body, "html.parser")
+    qa_pair = [] # save question and answer pair into a list
+    for tag in soup.find_all('strong'):  # tag finds all of the questions
+        question = tag.get_text(strip=True)
+        answer = tag.parent.find_next_sibling() # finds all of the answers
+        if answer is None:
+            continue
+        answer_text = answer.get_text(strip=True)
+        qa_pair.append({"question": question, "answer" : answer_text})
+    return qa_pair
+
+
+        
+body = "<p>Unai Emery was a bundle of energy on touchline throughout his first Premier League game as our head coach. But he couldn\u2019t get the result he wanted against Manchester City.</p>\n<p>It was the toughest possible start to Unai\u2019s tenure and in his post-match press conference he picked out the positives and identified where we need to improve.</p>\n<p>Read on for a full transcript:</p>\n<p><strong>on his verdict after his first game...</strong></p>\n<p>First, it's a good ambience here with our supporters and also with a big motivation for us to start watching the squad and also we wanted to start today, here in the first match, with our supporters. Today, Manchester City's performance showed us that we need to continue in our process to improve. I think they deserved this result, but we were improving in the 90 minutes, like I think we need to do for the next week and the next match on the pitch. In the second half, it's the moment that maybe we had chances to get a better result.</p>\n<p><strong>on the players' application of his ideas...</strong></p>\n<p>Today, Manchester City demanded our best performance. Today we watched and we need to continue working. I am happy with the players because they ran and they fought. We need to continue working tactically and defensively, and doing more to shorten the differences today between Manchester City and us.</p>\n<p><strong>on this game being a barometer of what progress is needed...</strong></p>\n<p>Yes. But we know this. We're starting and we need also to do one process one way. Today is the first step. Manchester City are working in their third year with Guardiola and they have built a team with security, good players and a great stability of playing like they want. We are only starting out now.</p>\n<p><strong>on not picking Bernd Leno...</strong></p>\n<p>We want the competition between the goalkeepers and also every player in the squad. Despite the position, it is the same opportunity and the same chances for all the goalkeepers. We spoke also and Petr Cech, he is doing very well. Today as well, I think he played well also. He has this experience for continuing to defend our goal. Also, Leno is starting with us. He is working very well, he played well in pre-season too but he has to wait for his chance to arrive.</p>\n<p><strong>on the first goal being reminiscent of the old Arsenal...</strong></p>\n<p>It's two different halves, the first and the second half, for me. The first half, we conceded more space on the pitch for Manchester City to progress. They deal very well with these situations and because they know that, they have confidence in their performance. In the second half, we took more risks with our pressing, took more risks with the ball to break their lines and go forward quickly. We wanted to create a goal so that we could get back into the game. I want to continue the process to build our team. I think we finished with the spirit I want and the team, for 90 minutes, they ran, they tried and they pushed. But I think we need to improve collectively and also individually. But I think this process is normal today against a great team like Manchester City.</p>\n<p><strong>on facing Chelsea next week and how we avoid having our press broken...</strong></p>\n<p>Each match is different. We want to prepare for each match with the difficulty and demands of the opposition. But today, I think the team in more time, we are playing with this personality and we need to improve this personality with better performances on the pitch. In the next week we are continuing this work and against Chelsea we are going to analyse the opposition. We are going there to win, with this intention against Chelsea.</p>\n<p><strong>on Ainsley Maitland-Niles\u2026</strong></p>\n<p>Today we are going to do the medical analysis with the doctor. Nacho is starting with the group, working yesterday and maybe he can come in, maybe, for the next match. I think every day is important to know how they are.</p>\n"
+
+soup = BeautifulSoup(body, "html.parser")
+
+chunk_by_qa(body)
