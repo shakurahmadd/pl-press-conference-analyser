@@ -140,7 +140,37 @@
 ### 2026-03-23 
 
 #### What I did
- - Built sentiment pipeline in `src/nlp/sentument.py`
+ - Built sentiment pipeline in `src/nlp/sentiment.py`
  - Added label and score columns to chunks table
  - Ran inference on al 6159 chunks: computed score and label by running out baseline model for every answer in the chunks table
  - The baseline model systematically underdetects negative sentiment in football press conferences, returning only 9% negative labels. This is consitent with the domain mismatch hypothesis - diplomatic-trained langauge is misclassified as neutral of positive
+
+## Phase 5 — Embeddings
+- Generated embeddings for all chunks in `src/embeddings/generate_embeddings.py`
+- Used sentence-transformer "all-MiniLM-L6-v2" to generate the embeddings 
+- Genereated 384-dimensional embeddings for all 6159 chunks
+- Normalised embeddings for cosine similarity
+- Build a FAISS IndexFlatIP index
+- Saved the index to `data/processed/chunks.faiss`
+- Saved the chunk ID mapping to `data/processed/chunk_ids.json`
+
+---
+
+#### Key decision
+**Decision:** Selected all_MiniLM-L6-v2 as our sentence transformer
+
+**Why:** The model has 206M downloads on Huggingface, making is trsutworthy. It is fast and good quality (384-dim) 
+
+**Alternatives considered:** Various other Huggingface models
+
+**Trade-offs:** It is a distilled, smaller model. Larger models like all-mpnet-base-v2 produce better embeddings but are slower and heavier. Fewer dimensions means faster search but potentially less expensive representation. 
+
+**Open questions:**
+- Does the retrieval actually work?
+- How many chunks should we retrieve per query (k=3?, k=5?)
+- Does it handle football-specific terminology well, or does it suffer the same domain problem as the sentiment model?
+
+**Interview Q I should be able to answer:** 
+- Why did you chose all-MiniLM-L6-v2 as your sentence transformer?  
+
+--- 
