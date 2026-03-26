@@ -7,3 +7,4 @@ torch
 sentence-transformers
 numpy
 faiss-cpu==1.7.4
+groq
