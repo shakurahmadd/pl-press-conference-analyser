@@ -6,6 +6,7 @@ transformers
 torch
 sentence-transformers
 numpy
-faiss-cpu==1.7.4
+faiss-cpu
 groq
 flask
+gunicorn
