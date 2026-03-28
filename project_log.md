@@ -235,7 +235,7 @@
 #### Key decision
 **Decision:** k=5 chunks retrieved 
 
-**Why:** So far, the decision is not fully justified. Selected as a reasonable default to get the pipeline working. This should be tested systematically. 
+**Why:** So far, the decision is not fully justified. This should be tested systematically (RAGAS). However too few chunks risks missing relevant context and too many chunks risks diluting the prompt with irrelevant content. Therefore, k=5 is a resonable default. 
 
 **Alternatives considered:** No alternatives considered at the moment but consider 3, 10 ect...
 
@@ -246,3 +246,91 @@
 **Interview Q I should be able to answer:** 
 - Why did you select k=5 nearest chunks for retrival?
 - Why did you choose to use Groq as your LLM to generate responses? 
+
+## Phase 7 — Flask App
+
+### 2026-03-27
+
+# Notes: 
+- GET — sends data in the URL, e.g. localhost:5000/chat?query=what+did+Arteta+say. Visible in the browser, bookmarkable, but has length limits.                          
+- POST — sends data in the request body, not the URL. Better for longer text inputs, and more appropriate when you're sending data to be processed. 
+
+#### What I did
+- Planned the app - twp pages: sentiment dsahbaord and RAG chat
+- Created `src/app/` folder structure (`templates/`, `static/`, `app.py`)
+- Built minimal Flask app with a `/` route returning "hello world"
+- Created `dashboard.html` template and connected it via `render_template`
+- Write get_data() function - queries SQLite with a JOIN between arsenal and chunks, computes weighted sentiment per conference, converted Unix timestamps to readable dates
+- Fixed threading error - moved database connection inside get_data()
+- Passed dates and scores to template via Jinja2, rendered sentiment timeline with Chart.js
+- Wrote distribution query - counts positive/neutral/negative chunks per year using strftime to extract year from Unix timestamp
+- Created `chat.html` template and connected it via `render_template`
+- Added the <textarea> and submit button that lets users type a question
+- Added the form with POST method 
+- Updated `/chat` route to handle GET and POST
+- Integrated rag_query() into the route
+- Displayed the answer in the template
+- Modified rag_query() to return chunk texts alongside the answer
+- Added collapsible source citations using <details>
+
+#### Key decision
+**Decision:** Used a weighted average for sentiment scores 
+
+**Why:** So that scores with low confidence scores are not over represented in the overall transcript result. Scores that are possible incorrect could decrease accuracy. 
+
+**Alternatives considered:** Plain average of all sentiment scores across chunk labels
+
+**Trade-offs:** 
+- If the model is overconfident then we have given higher weight to incorrect results
+- Plain average is simpler and easier to exaplin - weighted averages adds complexity
+
+
+**Interview Q I should be able to answer:** 
+- Why did you use a weighted average instead of a simple average for your sentiment scores?
+- What assumptions does your weighting scheme make about the model's confidence scores?
+
+---
+
+#### Key decision
+
+**Decision:** Used chunk labels for the distribution chart instead of weighted scores 
+
+**Why:** Chunk labels are simpler, consistent with the model's output, and sufficient for showing distribution trends
+
+**Alternatives considered:** Using the weighted average scores to re-label the transcripts as a whole 
+
+**Trade-offs:** 
+- We are trusting the model's label even when its confidence is low
+
+--- 
+
+#### Key decision
+
+**Decision:** Used POST method on the form
+
+**Why:** Query text should not appear in the URL and it is better for long inputs
+
+**Alternatives considered:** GET method
+
+**Trade-offs:** 
+- Users will not be able to bookmark, share of paste URL. GET gives you shareable/,bookmarkeable URLs, POST doesn't. For a chat interface the query is often long and one-time so bookmarking is not useful
+
+**Interview Q I should be able to answer:** 
+- Why did you choose to use POST method on the form?
+- What is the difference between POST and GET
+
+---
+
+#### Key decision
+
+**Decision:** Used collapsible citations 
+
+**Why:** It makes the RAG mechanics transparent to a hiring manager. They can see exactly what the context the model used to generate the answer.
+
+**Alternatives considered:** Providing the full chunk texts on the page without being collapsible 
+
+**Trade-offs:** 
+- Hidden citations might mean users never open them - so transparency benefit only works if users actually click.
+
+**Interview Q I should be able to answer:** 
+- Why did you choose to provide the chunk citations on the page?

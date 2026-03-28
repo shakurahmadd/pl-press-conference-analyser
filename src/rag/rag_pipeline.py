@@ -23,9 +23,7 @@ index = faiss.read_index('data/processed/chunks.faiss')
 #load model
 model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
 
-# connect to the database
-con = sqlite3.connect('data/database.db')
-cur = con.cursor()
+
 
 def retrieve_chunks(query, k=5):
     """
@@ -53,6 +51,9 @@ def get_chunk_text(chunk_ids):
     Returns:
         Chunk answer text as a list
     """
+    # connect to the database
+    con = sqlite3.connect('data/database.db')
+    cur = con.cursor()
     chunk_text = []
     for chunk_id in chunk_ids:
         cur.execute("SELECT answer FROM chunks WHERE id = ?", (chunk_id,)) # SQL Query expects a tuple
@@ -109,9 +110,8 @@ def rag_query(query):
     chunk_text = get_chunk_text(chunk_ids)
     system, user = build_prompt(query, chunk_text)
     answer = generate_answer(system, user)
-    return answer
+    return answer, chunk_text
 
 
 
-print(rag_query("What has Arteta said about winning the Premier League?"))
 
