@@ -353,8 +353,28 @@
 
 ### Hit deployment problems -> memory constraints on free tier -> Deployment deferred to focus on improving the project
 
+---
+
 ## Phase 9 - Styling
 ### 2026-03-28
+- Created `base.html` for shared features across pages
+- Created a plan for a basic theme -> navy and sports dashboard vibe
+- Made the plan into a prompt for Claude and ChatGPT to provide the `base.html` code
+- The AI prompt is pasted in a small changes were made to the "ask" button on the RAG chat page
 
+---
 
+#### Key decision
 
+**Decision:** Used Cluade and ChatGPT to assist with page styling
+
+**Why:** Creating nice looking pages is not the focus of this project. Time should be put into the understanding of more ML areas of the project. Also, Claude does a very goo job at tasks like this.  
+
+**Alternatives considered:** Writing all html without the use of AI
+
+**Trade-offs:** 
+- HTML and wepage styling skills are not devloped or pushed further
+- Less customisability and control -> Claude makes a lot of minor decisions and requires tweaking
+
+**Interview Q I should be able to answer:** 
+- Why did you feel that it was appropriate to let an AI model handle the app page design? 
