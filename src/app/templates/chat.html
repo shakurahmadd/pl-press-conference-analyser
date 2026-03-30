@@ -1,24 +1,20 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Chat</title>
-</head>
-<body>
-    <h1>RAG Chat</h1>
+{% extends "base.html" %}
+                                                                                                                                                                        
+{% block content %}                                                                                                                                                      
+<h1>RAG Chat</h1>                                                                                                                                                    
+                                                                                                                                                                        
+<form method="POST" action="/chat">                                                                                                                                
+    <textarea name="query" placeholder="Ask a question..."></textarea>
+    <button type="submit">Ask</button>
+</form>
 
-    <form method="POST" action="/chat">                                                                                                                                      
-        <textarea name="query" placeholder="Ask a question..."></textarea>                                                                                                   
-        <button type="submit">Ask</button>                                                                                                                                   
-    </form>          
+{{ answer }}                                                                                                                                                         
 
-    {{ answer }}
+{% for chunk in chunks %}                                                                                                                                            
+<details>                                                                                                                                                          
+    <summary>Source {{ loop.index }}</summary>
+    <p>{{ chunk }}</p>
+</details>
+{% endfor %}
 
-    {% for chunk in chunks %}                                                                                                                                                
-    <details>                                                                                                                                                                
-        <summary>Source {{ loop.index }}</summary>                                                                                                                           
-        <p>{{ chunk }}</p>                                                                                                                                                   
-    </details>                                                                                                                                                             
-    {% endfor %}
-
-</body>
-</html>
+{% endblock %}

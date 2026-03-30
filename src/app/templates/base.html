@@ -1,0 +1,15 @@
+<!DOCTYPE html>                                                                                                                                                          
+<html>                                                                                                                                                                   
+<head>                                                                                                                                                                   
+    <title>PL Press Conference Analyser</title>                                                                                                                          
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">                                                                                       
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>                                                                                                        
+</head>
+<body>                                                                                                                                                                   
+    <nav>                                                                                                                                                              
+        <a href="/">Dashboard</a>                                                                                                                                        
+        <a href="/chat">Chat</a>
+    </nav>                                                                                                                                                               
+    {% block content %}{% endblock %}                                                                                                                                  
+</body>
+</html>

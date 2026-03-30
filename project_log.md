@@ -334,3 +334,27 @@
 
 **Interview Q I should be able to answer:** 
 - Why did you choose to provide the chunk citations on the page?
+
+---
+
+## Phase 8 — Deployment
+### 2026-03-28
+
+#### What I did
+- Created Procfile for Render to read
+- Used gunicorn for proper deployment 
+- Procfile run line: `gunicorn src.app.app:app` -> tells Render where to run 
+- Removed faiss version in requirements.txt to avoid Render deployment mismatch
+- Removed `database.db` and `data/processed` from `.gitignore` so Render has acess to the data
+- Added `.python-version` to pin python version in Render
+- Created a new web service in Render (free version)
+- Added Groq API key to render enviroment variables
+- Fix Procfile: use gunicorn with correct port binding for Render (` --bind 0.0.0.0:$PORT`)
+
+### Hit deployment problems -> memory constraints on free tier -> Deployment deferred to focus on improving the project
+
+## Phase 9 - Styling
+### 2026-03-28
+
+
+
