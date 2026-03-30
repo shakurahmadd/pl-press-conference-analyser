@@ -313,7 +313,7 @@
 **Alternatives considered:** GET method
 
 **Trade-offs:** 
-- Users will not be able to bookmark, share of paste URL. GET gives you shareable/,bookmarkeable URLs, POST doesn't. For a chat interface the query is often long and one-time so bookmarking is not useful
+- Users will not be able to bookmark, share of paste URL. GET gives you shareable, bookmarkeable URLs, POST doesn't. For a chat interface the query is often long and one-time so bookmarking is not useful
 
 **Interview Q I should be able to answer:** 
 - Why did you choose to use POST method on the form?
@@ -368,7 +368,7 @@
 
 **Decision:** Used Cluade and ChatGPT to assist with page styling
 
-**Why:** Creating nice looking pages is not the focus of this project. Time should be put into the understanding of more ML areas of the project. Also, Claude does a very goo job at tasks like this.  
+**Why:** Creating nice looking pages is not the focus of this project. Time should be put into the understanding of more ML areas of the project. Also, Claude does a very good job at tasks like this.  
 
 **Alternatives considered:** Writing all html without the use of AI
 
@@ -378,3 +378,4 @@
 
 **Interview Q I should be able to answer:** 
 - Why did you feel that it was appropriate to let an AI model handle the app page design? 
+
